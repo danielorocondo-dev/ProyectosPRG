@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://deuf6f53y1vyu"]
+
+[ext_resource type="Texture2D" uid="uid://cgqm34d25eac1" path="res://assets/paret_vertical.png" id="1_2aun6"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_p05ho"]
+size = Vector2(1451.75, 30.0001)
+
+[node name="ParetDreta" type="StaticBody2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(708, 721)
+texture = ExtResource("1_2aun6")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2(708, 726.875)
+rotation = 1.5708
+shape = SubResource("RectangleShape2D_p05ho")

@@ -1,0 +1,179 @@
+[gd_scene load_steps=13 format=3 uid="uid://d2iocjxourg4c"]
+
+[ext_resource type="PackedScene" uid="uid://deuf6f53y1vyu" path="res://vertical_walls/paret_vertical.tscn" id="1_426yd"]
+[ext_resource type="Texture2D" uid="uid://ct5pw03w8ss4i" path="res://assets/paret_hortzontalt.png" id="2_8fguc"]
+[ext_resource type="PackedScene" uid="uid://bfmaqorrhu7m3" path="res://ball/ball.tscn" id="3_c34u6"]
+[ext_resource type="PackedScene" uid="uid://6d7nx6haltey" path="res://player/player.tscn" id="4_m3504"]
+[ext_resource type="PackedScene" uid="uid://cdhhroetcmbqb" path="res://bricks/brick.tscn" id="5_w0t7q"]
+[ext_resource type="Script" path="res://hud.gd" id="6_unk4o"]
+[ext_resource type="PackedScene" uid="uid://c66ce6rb5dbg8" path="res://control_vidas.tscn" id="7_m2b48"]
+[ext_resource type="FontFile" uid="uid://lyqm5yhcbnjn" path="res://assets/fonts/Emulogic-zrEw.ttf" id="8_3271w"]
+[ext_resource type="FontFile" uid="uid://p5br6t1kxlsn" path="res://assets/fonts/MyGirlIsRetro-0Grz.ttf" id="9_qhgps"]
+
+[sub_resource type="GDScript" id="GDScript_8gqqv"]
+script/source = "extends Node2D
+
+@onready var center = $Ball.position
+
+func _on_limit_area_entered(area):
+	if area.name == \"Ball\":
+		$Ball.reset_ball($Player)
+
+func _on_area_2d_body_entered(body: Node2D) -> void:
+	if body.name == \"Ball\":
+		GameData.lives -=1
+		if (GameData.lives<=0):
+			$HUD/GameOverLabel.visible=true
+			$HUD/Button.visible=true
+			GameData.game_over=true
+	$Ball.reset_ball($Player)
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ymyu7"]
+size = Vector2(723, 30)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xijip"]
+size = Vector2(663, 75.5)
+
+[node name="Breakout" type="Node2D"]
+script = SubResource("GDScript_8gqqv")
+
+[node name="ParetDreta" parent="." instance=ExtResource("1_426yd")]
+position = Vector2(0, -1)
+
+[node name="ParetEsquerra" parent="." instance=ExtResource("1_426yd")]
+position = Vector2(-693, -1)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+position = Vector2(-28, -107)
+
+[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D"]
+position = Vector2(389.5, 122)
+scale = Vector2(1.00417, 1)
+texture = ExtResource("2_8fguc")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(389.5, 122)
+shape = SubResource("RectangleShape2D_ymyu7")
+
+[node name="Ball" parent="." instance=ExtResource("3_c34u6")]
+position = Vector2(360, 824)
+
+[node name="Player" parent="." instance=ExtResource("4_m3504")]
+position = Vector2(360, 1160)
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(361.5, 1239.75)
+shape = SubResource("RectangleShape2D_xijip")
+
+[node name="Brick" parent="." instance=ExtResource("5_w0t7q")]
+position = Vector2(369, 142)
+
+[node name="Brick" parent="Brick" instance=ExtResource("5_w0t7q")]
+position = Vector2(127, 96)
+
+[node name="Brick3" parent="Brick" instance=ExtResource("5_w0t7q")]
+position = Vector2(127, 160)
+
+[node name="Brick3" parent="Brick/Brick3" instance=ExtResource("5_w0t7q")]
+position = Vector2(0, 66)
+
+[node name="Brick12" parent="Brick/Brick3" instance=ExtResource("5_w0t7q")]
+position = Vector2(256, 66)
+
+[node name="Brick5" parent="Brick" instance=ExtResource("5_w0t7q")]
+position = Vector2(255, 128)
+
+[node name="Brick10" parent="Brick" instance=ExtResource("5_w0t7q")]
+position = Vector2(383, 96)
+
+[node name="Brick10" parent="Brick/Brick10" instance=ExtResource("5_w0t7q")]
+position = Vector2(-128, 97)
+
+[node name="Brick12" parent="Brick/Brick10" instance=ExtResource("5_w0t7q")]
+position = Vector2(-128, 161)
+
+[node name="Brick12" parent="Brick" instance=ExtResource("5_w0t7q")]
+position = Vector2(383, 160)
+
+[node name="Brick3" parent="." instance=ExtResource("5_w0t7q")]
+position = Vector2(369, 206)
+
+[node name="Brick3" parent="Brick3" instance=ExtResource("5_w0t7q")]
+position = Vector2(-1, 128)
+
+[node name="Brick3" parent="Brick3/Brick3" instance=ExtResource("5_w0t7q")]
+position = Vector2(-1, -63)
+
+[node name="Brick3" parent="Brick3/Brick3/Brick3" instance=ExtResource("5_w0t7q")]
+position = Vector2(513, -1)
+
+[node name="Brick3" parent="Brick3/Brick3/Brick3/Brick3" instance=ExtResource("5_w0t7q")]
+position = Vector2(0, 64)
+
+[node name="Brick5" parent="." instance=ExtResource("5_w0t7q")]
+position = Vector2(497, 174)
+
+[node name="Brick7" parent="." instance=ExtResource("5_w0t7q")]
+position = Vector2(881, 142)
+
+[node name="Brick9" parent="." instance=ExtResource("5_w0t7q")]
+position = Vector2(881, 206)
+
+[node name="Brick10" parent="." instance=ExtResource("5_w0t7q")]
+position = Vector2(625, 142)
+
+[node name="Brick12" parent="." instance=ExtResource("5_w0t7q")]
+position = Vector2(625, 206)
+
+[node name="Brick14" parent="." instance=ExtResource("5_w0t7q")]
+position = Vector2(753, 174)
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource("6_unk4o")
+
+[node name="ControlVidas" parent="HUD" instance=ExtResource("7_m2b48")]
+offset_left = 29.0
+offset_top = 29.0
+offset_right = 29.0
+offset_bottom = 29.0
+
+[node name="ScoreLabel" type="Label" parent="HUD"]
+offset_left = 156.0
+offset_top = 36.0
+offset_right = 556.0
+offset_bottom = 100.0
+theme_override_fonts/font = ExtResource("8_3271w")
+theme_override_font_sizes/font_size = 30
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GameOverLabel" type="Label" parent="HUD"]
+visible = false
+offset_left = 171.0
+offset_top = 279.0
+offset_right = 570.0
+offset_bottom = 584.0
+theme_override_colors/font_color = Color(1, 0.811765, 0, 1)
+theme_override_fonts/font = ExtResource("9_qhgps")
+theme_override_font_sizes/font_size = 150
+text = "GAME
+OVER"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="HUD"]
+visible = false
+offset_left = 230.0
+offset_top = 663.0
+offset_right = 483.0
+offset_bottom = 712.0
+theme_override_colors/font_color = Color(1, 0.811765, 0, 1)
+theme_override_fonts/font = ExtResource("8_3271w")
+theme_override_font_sizes/font_size = 20
+text = "NEW GAME"
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

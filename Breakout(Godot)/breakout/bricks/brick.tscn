@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3 uid="uid://cdhhroetcmbqb"]
+
+[ext_resource type="Texture2D" uid="uid://yvnvyg2xl7n3" path="res://assets/brick.png" id="1_4242l"]
+[ext_resource type="Script" path="res://bricks/brick.gd" id="1_hhscm"]
+[ext_resource type="AudioStream" uid="uid://daas5mc0x5o3q" path="res://assets/dani_pop.mp3" id="3_5rehq"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_eegon"]
+size = Vector2(128, 32)
+
+[node name="Brick" type="CharacterBody2D"]
+position = Vector2(889, 225)
+script = ExtResource("1_hhscm")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-265, 16)
+texture = ExtResource("1_4242l")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2(-265, 16)
+shape = SubResource("RectangleShape2D_eegon")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_5rehq")

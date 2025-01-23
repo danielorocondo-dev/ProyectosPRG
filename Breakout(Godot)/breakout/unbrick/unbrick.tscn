@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3 uid="uid://d2bv41jnxaq2c"]
+
+[ext_resource type="Script" path="res://unbrick/unbrick.gd" id="1_8kbhq"]
+[ext_resource type="Texture2D" uid="uid://bqjawdtmk7fx0" path="res://assets/unbrick.png" id="1_lwen7"]
+[ext_resource type="AudioStream" uid="uid://daas5mc0x5o3q" path="res://assets/dani_pop.mp3" id="3_sxgmn"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hrppp"]
+size = Vector2(128, 32)
+
+[node name="Unbrick" type="CharacterBody2D"]
+script = ExtResource("1_8kbhq")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-265, 16)
+scale = Vector2(0.333333, 0.25)
+texture = ExtResource("1_lwen7")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2(-265, 16)
+shape = SubResource("RectangleShape2D_hrppp")
+
+[node name="DaniPop" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_sxgmn")

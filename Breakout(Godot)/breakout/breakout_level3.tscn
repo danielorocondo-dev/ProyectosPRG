@@ -1,0 +1,318 @@
+[gd_scene load_steps=21 format=3 uid="uid://bws2a5dbt1t6q"]
+
+[ext_resource type="PackedScene" uid="uid://deuf6f53y1vyu" path="res://vertical_walls/paret_vertical.tscn" id="1_nqf21"]
+[ext_resource type="Texture2D" uid="uid://ct5pw03w8ss4i" path="res://assets/paret_hortzontalt.png" id="2_vwv46"]
+[ext_resource type="PackedScene" uid="uid://bfmaqorrhu7m3" path="res://ball/ball.tscn" id="3_wpm4y"]
+[ext_resource type="PackedScene" uid="uid://6d7nx6haltey" path="res://player/player.tscn" id="4_75iv2"]
+[ext_resource type="AudioStream" uid="uid://bv3uek8foafm5" path="res://assets/dani_choque.mp3" id="4_yd2t3"]
+[ext_resource type="PackedScene" uid="uid://cdhhroetcmbqb" path="res://bricks/brick.tscn" id="5_kiufy"]
+[ext_resource type="Script" path="res://hud.gd" id="6_u6vsb"]
+[ext_resource type="PackedScene" uid="uid://c66ce6rb5dbg8" path="res://control_vidas.tscn" id="7_rgx7v"]
+[ext_resource type="FontFile" uid="uid://lyqm5yhcbnjn" path="res://assets/fonts/Emulogic-zrEw.ttf" id="8_dgklx"]
+[ext_resource type="FontFile" uid="uid://p5br6t1kxlsn" path="res://assets/fonts/MyGirlIsRetro-0Grz.ttf" id="9_xr5k2"]
+[ext_resource type="AudioStream" uid="uid://cebph1p4u0mar" path="res://assets/dani_vida.mp3" id="10_rdwbo"]
+[ext_resource type="Texture2D" uid="uid://c121jr674qioe" path="res://assets/heart.png" id="11_gmig6"]
+[ext_resource type="AudioStream" uid="uid://nfil4016tg42" path="res://assets/dani_muerte.mp3" id="13_463un"]
+[ext_resource type="AudioStream" uid="uid://daas5mc0x5o3q" path="res://assets/dani_pop.mp3" id="13_hbf7k"]
+[ext_resource type="AudioStream" uid="uid://b0i0mts3iqn3w" path="res://assets/dani_sound3.mp3" id="14_2ujko"]
+[ext_resource type="AudioStream" uid="uid://cu28wypmdprr" path="res://assets/dani_game_over.mp3" id="14_4a2qj"]
+[ext_resource type="PackedScene" uid="uid://d2bv41jnxaq2c" path="res://unbrick/unbrick.tscn" id="16_axpfu"]
+
+[sub_resource type="GDScript" id="GDScript_8gqqv"]
+script/source = "extends Node2D
+
+@onready var center = $Ball.position
+var vida_power_up_visible = true
+func _ready() -> void:
+	$BackgroundMusic.play()
+
+
+func _on_limit_area_entered(area):
+	if area.name == \"Ball\":
+		$Ball.reset_ball($Player)
+
+func _on_area_2d_body_entered(body: Node2D) -> void:
+	if body.name == \"Ball\":
+		GameData.lives -=1
+		if (GameData.lives<=0):
+			$DaniGameOver.play()
+			$HUD/GameOverLabel.visible=true
+			$HUD/Button.visible=true
+			GameData.score=0
+			GameData.brick_counter=1
+			GameData.game_over=true
+		else: 
+			$DaniMuerte.play()
+	$Ball.reset_ball($Player)
+
+func _on_vida_extra_body_entered(body: Node2D) -> void:
+	if GameData.lives<6:
+		if vida_power_up_visible:
+			GameData.lives +=1
+			$HUD/Vida_Extra/DaniVida.play()
+			$HUD/Vida_Extra.visible=true
+			var tween = create_tween()
+			var tween2 = create_tween()
+			tween.tween_property($HUD/Vida_Extra, \"modulate:a\", 0.0, 0.8)
+			tween2.tween_property($Vida_Extra,\"modulate:a\", 0.0, 0.8)
+			vida_power_up_visible = false
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ymyu7"]
+size = Vector2(723, 30)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xijip"]
+size = Vector2(663, 75.5)
+
+[node name="Breakout" type="Node2D"]
+script = SubResource("GDScript_8gqqv")
+
+[node name="ParetDreta" parent="." instance=ExtResource("1_nqf21")]
+position = Vector2(0, -1)
+
+[node name="ParetEsquerra" parent="." instance=ExtResource("1_nqf21")]
+position = Vector2(-693, -1)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+position = Vector2(-28, -107)
+
+[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D"]
+position = Vector2(389.5, 122)
+scale = Vector2(1.00417, 1)
+texture = ExtResource("2_vwv46")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+visible = false
+position = Vector2(389.5, 122)
+shape = SubResource("RectangleShape2D_ymyu7")
+
+[node name="Ball" parent="." instance=ExtResource("3_wpm4y")]
+position = Vector2(360, 824)
+
+[node name="bolachoque" type="AudioStreamPlayer" parent="Ball"]
+stream = ExtResource("4_yd2t3")
+
+[node name="Player" parent="." instance=ExtResource("4_75iv2")]
+position = Vector2(360, 1160)
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(361.5, 1239.75)
+shape = SubResource("RectangleShape2D_xijip")
+
+[node name="Brick5" parent="." instance=ExtResource("5_kiufy")]
+position = Vector2(496, 174)
+
+[node name="Brick10" parent="." instance=ExtResource("5_kiufy")]
+position = Vector2(624, 142)
+
+[node name="Brick12" parent="." instance=ExtResource("5_kiufy")]
+position = Vector2(624, 206)
+
+[node name="Brick14" parent="." instance=ExtResource("5_kiufy")]
+position = Vector2(752, 174)
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource("6_u6vsb")
+
+[node name="ControlVidas" parent="HUD" instance=ExtResource("7_rgx7v")]
+offset_left = 29.0
+offset_top = 29.0
+offset_right = 29.0
+offset_bottom = 29.0
+
+[node name="ScoreLabel" type="Label" parent="HUD"]
+offset_left = 156.0
+offset_top = 36.0
+offset_right = 556.0
+offset_bottom = 100.0
+theme_override_fonts/font = ExtResource("8_dgklx")
+theme_override_font_sizes/font_size = 30
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GameOverLabel" type="Label" parent="HUD"]
+visible = false
+offset_left = 171.0
+offset_top = 279.0
+offset_right = 570.0
+offset_bottom = 584.0
+theme_override_colors/font_color = Color(1, 0.811765, 0, 1)
+theme_override_fonts/font = ExtResource("9_xr5k2")
+theme_override_font_sizes/font_size = 150
+text = "GAME
+OVER"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="HUD"]
+visible = false
+offset_left = 230.0
+offset_top = 663.0
+offset_right = 483.0
+offset_bottom = 712.0
+theme_override_colors/font_color = Color(1, 0.811765, 0, 1)
+theme_override_fonts/font = ExtResource("8_dgklx")
+theme_override_font_sizes/font_size = 20
+text = "NEW GAME"
+
+[node name="Vida_Extra" type="Sprite2D" parent="HUD"]
+visible = false
+position = Vector2(429, 650)
+scale = Vector2(8.4375, 8.4375)
+texture = ExtResource("11_gmig6")
+
+[node name="+1" type="Label" parent="HUD/Vida_Extra"]
+offset_left = -33.7778
+offset_top = -9.48148
+offset_right = -9.77778
+offset_bottom = 6.51852
+theme_override_fonts/font = ExtResource("8_dgklx")
+theme_override_font_sizes/font_size = 12
+text = "+1
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DaniVida" type="AudioStreamPlayer" parent="HUD/Vida_Extra"]
+stream = ExtResource("10_rdwbo")
+
+[node name="Brick2" parent="." instance=ExtResource("5_kiufy")]
+position = Vector2(496, 238)
+
+[node name="Brick4" parent="." instance=ExtResource("5_kiufy")]
+position = Vector2(496, 366)
+
+[node name="Brick13" parent="." instance=ExtResource("5_kiufy")]
+position = Vector2(752, 366)
+
+[node name="Brick6" parent="." instance=ExtResource("5_kiufy")]
+position = Vector2(368, 270)
+
+[node name="Brick11" parent="." instance=ExtResource("5_kiufy")]
+position = Vector2(624, 334)
+
+[node name="Brick15" parent="." instance=ExtResource("5_kiufy")]
+position = Vector2(624, 398)
+
+[node name="Brick16" parent="." instance=ExtResource("5_kiufy")]
+position = Vector2(752, 302)
+
+[node name="Brick18" parent="." instance=ExtResource("5_kiufy")]
+position = Vector2(496, 302)
+
+[node name="Brick19" parent="." instance=ExtResource("5_kiufy")]
+position = Vector2(752, 238)
+
+[node name="Brick7" parent="." instance=ExtResource("5_kiufy")]
+position = Vector2(880, 270)
+
+[node name="Vida_Extra" type="Area2D" parent="."]
+position = Vector2(357, 300)
+
+[node name="Heart2" type="Sprite2D" parent="Vida_Extra"]
+position = Vector2(-0.992798, -15.8518)
+scale = Vector2(2.5, 2.47)
+texture = ExtResource("11_gmig6")
+metadata/_edit_group_ = true
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="Vida_Extra"]
+visible = false
+position = Vector2(-1.09277, -15.8)
+scale = Vector2(2.5, 2.47)
+polygon = PackedVector2Array(-8, 1, 0, 9, 8, 1, 8, -5, 5, -8, -5, -8, -8, -5)
+metadata/_edit_group_ = true
+
+[node name="DaniPop" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("13_hbf7k")
+
+[node name="BackgroundMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("14_2ujko")
+volume_db = -10.0
+parameters/looping = true
+
+[node name="DaniMuerte" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("13_463un")
+
+[node name="DaniGameOver" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("14_4a2qj")
+
+[node name="Unbrick" parent="." instance=ExtResource("16_axpfu")]
+position = Vector2(496, 480)
+
+[node name="Brick8" parent="." instance=ExtResource("5_kiufy")]
+position = Vector2(496, 334)
+
+[node name="Brick17" parent="." instance=ExtResource("5_kiufy")]
+position = Vector2(752, 334)
+
+[node name="Brick20" parent="." instance=ExtResource("5_kiufy")]
+position = Vector2(624, 366)
+
+[node name="Brick9" parent="." instance=ExtResource("5_kiufy")]
+position = Vector2(368, 302)
+
+[node name="Brick21" parent="." instance=ExtResource("5_kiufy")]
+position = Vector2(880, 302)
+
+[node name="Unbrick2" parent="." instance=ExtResource("16_axpfu")]
+position = Vector2(624, 512)
+
+[node name="Unbrick3" parent="." instance=ExtResource("16_axpfu")]
+position = Vector2(752, 480)
+
+[node name="Vida_Extra2" type="Area2D" parent="."]
+position = Vector2(357, 300)
+
+[node name="Heart2" type="Sprite2D" parent="Vida_Extra2"]
+position = Vector2(-0.992798, -15.8518)
+scale = Vector2(2.5, 2.47)
+texture = ExtResource("11_gmig6")
+metadata/_edit_group_ = true
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="Vida_Extra2"]
+visible = false
+position = Vector2(-1.09277, -15.8)
+scale = Vector2(2.5, 2.47)
+polygon = PackedVector2Array(-8, 1, 0, 9, 8, 1, 8, -5, 5, -8, -5, -8, -8, -5)
+metadata/_edit_group_ = true
+
+[node name="Vida_Extra3" type="Area2D" parent="."]
+position = Vector2(357, 300)
+
+[node name="Heart2" type="Sprite2D" parent="Vida_Extra3"]
+position = Vector2(-0.992798, -15.8518)
+scale = Vector2(2.5, 2.47)
+texture = ExtResource("11_gmig6")
+metadata/_edit_group_ = true
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="Vida_Extra3"]
+visible = false
+position = Vector2(-1.09277, -15.8)
+scale = Vector2(2.5, 2.47)
+polygon = PackedVector2Array(-8, 1, 0, 9, 8, 1, 8, -5, 5, -8, -5, -8, -8, -5)
+metadata/_edit_group_ = true
+
+[node name="Vida_Extra4" type="Area2D" parent="."]
+position = Vector2(357, 300)
+
+[node name="Heart2" type="Sprite2D" parent="Vida_Extra4"]
+position = Vector2(-0.992798, -15.8518)
+scale = Vector2(2.5, 2.47)
+texture = ExtResource("11_gmig6")
+metadata/_edit_group_ = true
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="Vida_Extra4"]
+visible = false
+position = Vector2(-1.09277, -15.8)
+scale = Vector2(2.5, 2.47)
+polygon = PackedVector2Array(-8, 1, 0, 9, 8, 1, 8, -5, 5, -8, -5, -8, -8, -5)
+metadata/_edit_group_ = true
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_entered" from="Vida_Extra" to="." method="_on_vida_extra_body_entered"]
+[connection signal="body_entered" from="Vida_Extra2" to="." method="_on_vida_extra_body_entered"]
+[connection signal="body_entered" from="Vida_Extra3" to="." method="_on_vida_extra_body_entered"]
+[connection signal="body_entered" from="Vida_Extra4" to="." method="_on_vida_extra_body_entered"]
